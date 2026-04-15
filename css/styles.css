@@ -299,8 +299,32 @@ body {
   align-items: center;
   justify-content: space-between;
   margin: 1rem 0;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-family: var(--font);
+  color: var(--text-secondary);
+  background: #ffffff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filter-select:focus {
+  border-color: var(--accent-mid);
+  box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
 }
 
 .search-input {
@@ -400,20 +424,149 @@ body {
   white-space: nowrap;
 }
 
+.fees-cell { white-space: nowrap; }
+
+.fees-value {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.fund-cell {
+  font-size: 0.8125rem;
+  max-width: 180px;
+}
+
+.col-yn  { text-align: center; }
+.col-yn .badge { display: block; margin: 0 auto; text-align: center; }
+
+.expand-cell {
+  width: 32px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.625rem;
+}
+
+.expand-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  opacity: 0.5;
+}
+
+.data-row {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.data-row:hover .expand-icon { opacity: 1; }
+
+.data-row.row-expanded .expand-icon {
+  transform: rotate(180deg);
+  opacity: 1;
+  color: var(--accent);
+}
+
+.data-row.row-expanded td {
+  background: #f5f8fd;
+  border-bottom: none;
+}
+
+/* --- Expandable detail row --- */
+.detail-row {
+  display: none;
+}
+
+.detail-row[aria-hidden="false"] {
+  display: table-row;
+}
+
+.detail-row td {
+  padding: 0 !important;
+  border-bottom: 2px solid var(--accent-border) !important;
+  background: #f5f8fd;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 1.25rem 1.5rem;
+  gap: 1rem 2rem;
+}
+
+.detail-block {
+  min-width: 0;
+}
+
+.detail-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.detail-value {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.detail-sub {
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.detail-sub-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.resource-tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--accent-border);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  margin: 0.1rem 0.1rem 0.1rem 0;
+}
+
+.na-cell {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.8125rem;
+}
+
+.table-note {
+  font-size: 0.75rem !important;
+  color: var(--text-muted) !important;
+  margin-top: 0.75rem !important;
+  font-style: italic;
+}
+
 /* --- Badges --- */
 .badge {
   display: inline-block;
   font-size: 0.6875rem;
   font-weight: 600;
-  padding: 0.15rem 0.45rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 3px;
   letter-spacing: 0.01em;
-  text-transform: capitalize;
+  white-space: nowrap;
 }
 
-.badge-high     { background: var(--green-bg); color: var(--green-text); }
-.badge-moderate { background: var(--amber-bg); color: var(--amber-text); }
-.badge-limited  { background: var(--red-bg);   color: var(--red-text);   }
+.badge-yes     { background: var(--green-bg);  color: var(--green-text); }
+.badge-no      { background: var(--red-bg);    color: var(--red-text);   }
+.badge-unknown { background: #f3f4f6;          color: var(--text-muted); }
+.badge-travel  { background: #eff6ff;          color: #1d4ed8;           }
+.badge-advance { background: #f0fdf4;          color: #166534;           }
 
 .loading-cell {
   text-align: center !important;
@@ -515,6 +668,19 @@ body {
   .comparison-table tbody td {
     padding: 0.625rem 0.75rem;
     font-size: 0.8125rem;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-select {
+    flex: 1;
+    min-width: 140px;
   }
 }
 
