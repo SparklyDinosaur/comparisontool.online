@@ -1,194 +1,174 @@
 /* ============================================================
    UK Medical Schools Comparison Tool — app.js
    ============================================================ */
-
 (function () {
   'use strict';
 
-  var allData = [];
+  var allData    = [];
   var sortedData = [];
   var currentSort = { col: null, dir: 'asc' };
 
-  document.addEventListener('DOMContentLoaded', function () {
-    loadData();
-  });
+  document.addEventListener('DOMContentLoaded', init);
 
-  function loadData() {
+  function init() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'data/medical_schools.json', true);
     xhr.responseType = 'json';
     xhr.onload = function () {
       if (xhr.status >= 200 && xhr.status < 300) {
-        var json = xhr.response;
-        allData = (json && Array.isArray(json.schools)) ? json.schools : [];
+        allData = (xhr.response && Array.isArray(xhr.response.schools)) ? xhr.response.schools : [];
         sortedData = allData.slice();
         renderTable(sortedData);
         setupSearch();
         setupFilters();
         setupSort();
-      } else {
-        showError();
-      }
+        updateCount(sortedData.length);
+      } else { showError(); }
     };
     xhr.onerror = showError;
     xhr.send();
   }
 
-  /* --- Render --- */
+  /* ── Render ──────────────────────────────────────────────── */
   function renderTable(data) {
     var tbody = document.getElementById('table-body');
-    var countEl = document.getElementById('table-count');
     if (!tbody) return;
+    updateCount(data.length);
 
-    if (countEl) {
-      countEl.textContent = data.length + ' of ' + allData.length + ' institution' + (allData.length !== 1 ? 's' : '');
-    }
-
-    if (data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" class="loading-cell">No matching institutions found.</td></tr>';
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="12" class="loading-cell">No matching institutions found.</td></tr>';
       return;
     }
 
     var html = '';
-    data.forEach(function (school, idx) {
-      var rowId = 'row-' + idx;
-      var detailId = 'detail-' + idx;
-
-      html += '<tr class="data-row" data-detail="' + detailId + '" tabindex="0" role="button" aria-expanded="false">' +
-        '<td class="university-cell">' + esc(school.university) + '</td>' +
-        '<td class="fees-cell">' + formatFees(school.international_fees) + '</td>' +
-        '<td>' + travelBadge(school.travel_support_type) + '</td>' +
-        '<td>' + ynBadge(school.flexible_leave) + '</td>' +
-        '<td>' + ynBadge(school.scrubs) + '</td>' +
-        '<td>' + ynBadge(school.stethoscope) + '</td>' +
-        '<td>' + ynBadge(school.passmed) + '</td>' +
-        '<td class="fund-cell">' + formatFunding(school.hardship_funding) + '</td>' +
-        '<td class="expand-cell"><span class="expand-icon" aria-hidden="true">&#9660;</span></td>' +
-        '</tr>';
-
-      html += '<tr class="detail-row" id="' + detailId + '" aria-hidden="true">' +
-        '<td colspan="9">' +
-        '<div class="detail-grid">' +
-
-        '<div class="detail-block">' +
-        '<div class="detail-label">Travel support — full details</div>' +
-        '<div class="detail-value">' + esc(school.travel_details) + '</div>' +
-        '</div>' +
-
-        '<div class="detail-block">' +
-        '<div class="detail-label">Flexible leave — details</div>' +
-        '<div class="detail-value">' + esc(school.leave_details) + '</div>' +
-        '</div>' +
-
-        '<div class="detail-block">' +
-        '<div class="detail-label">Resources provided</div>' +
-        '<div class="detail-value">' + resourcesList(school) + '</div>' +
-        '</div>' +
-
-        '<div class="detail-block">' +
-        '<div class="detail-label">Financial support</div>' +
-        '<div class="detail-value">' +
-        '<div class="detail-sub"><span class="detail-sub-label">Hardship:</span> ' + esc(school.hardship_funding) + '</div>' +
-        (school.research_funding && school.research_funding !== '—' ? '<div class="detail-sub"><span class="detail-sub-label">Research:</span> ' + esc(school.research_funding) + '</div>' : '') +
-        (school.elective_funding_year && school.elective_funding_year !== '—' ? '<div class="detail-sub"><span class="detail-sub-label">Elective funding:</span> ' + esc(school.elective_funding_year) + '</div>' : '') +
-        '</div>' +
-        '</div>' +
-
-        '</div>' +
-        '</td>' +
-        '</tr>';
+    data.forEach(function (s, idx) {
+      var did = 'det-' + idx;
+      html +=
+        '<tr class="data-row" data-det="' + did + '" tabindex="0" role="button" aria-expanded="false">'
+        + '<td class="col-uni">'        + esc(s.university)             + '</td>'
+        + '<td class="col-fees">'       + fmtFees(s.international_fees) + '</td>'
+        + '<td class="col-travel">'     + travelBadge(s.travel_type)    + '</td>'
+        + '<td class="col-yn">'         + ynBadge(s.flexible_leave)     + '</td>'
+        + '<td class="col-yn">'         + ynBadge(s.scrubs)             + '</td>'
+        + '<td class="col-yn">'         + ynBadge(s.stethoscope)        + '</td>'
+        + '<td class="col-yn">'         + ynBadge(s.passmed)            + '</td>'
+        + '<td class="col-yn">'         + ynBadge(s.ipads)              + '</td>'
+        + '<td class="col-fund">'       + fmtShort(s.hardship_funding)  + '</td>'
+        + '<td class="col-elective">'   + esc(s.elective_funding_year || '—') + '</td>'
+        + '<td class="col-expand"><span class="expand-icon" aria-hidden="true">&#9660;</span></td>'
+        + '</tr>'
+        + detailRow(s, did);
     });
 
     tbody.innerHTML = html;
 
-    /* Attach expand/collapse */
-    var rows = tbody.querySelectorAll('.data-row');
-    rows.forEach(function (row) {
-      row.addEventListener('click', toggleDetail);
+    tbody.querySelectorAll('.data-row').forEach(function (row) {
+      row.addEventListener('click',   toggleDetail);
       row.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDetail.call(row); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDetail.call(this); }
       });
     });
   }
 
+  function detailRow(s, did) {
+    return '<tr class="detail-row" id="' + did + '" aria-hidden="true"><td colspan="11"><div class="detail-grid">'
+      + dblock('Travel — full details',        s.travel_details       || 'No details provided')
+      + dblock('Flexible leave — details',     s.leave_details        || '—')
+      + dblock('Scrubs — details',             s.scrubs_details       || (s.scrubs === 'Yes' ? 'Provided' : '—'))
+      + dblock('Stethoscope — details',        s.stethoscope_details  || (s.stethoscope === 'Yes' ? 'Provided' : '—'))
+      + dblock('Passmed / question bank',      buildPassmed(s))
+      + dblock('iPads / other resources',      buildResources(s))
+      + dblock('Hardship funding — full details', s.hardship_funding  || '—')
+      + dblock('Research funding',             s.research_funding     || '—')
+      + dblock('Elective funding year',        s.elective_funding_year || '—')
+      + '</div></td></tr>';
+  }
+
+  function dblock(label, content) {
+    return '<div class="detail-block"><div class="detail-label">' + label + '</div>'
+         + '<div class="detail-value">' + esc(content) + '</div></div>';
+  }
+
+  function buildPassmed(s) {
+    var lines = [];
+    if (s.passmed && s.passmed !== 'Not reported') lines.push('Passmed: ' + s.passmed);
+    if (s.passmed_details) lines.push(s.passmed_details);
+    return lines.join('\n') || '—';
+  }
+
+  function buildResources(s) {
+    var lines = [];
+    if (s.ipads && s.ipads !== 'Not reported') lines.push('iPads: ' + s.ipads);
+    if (s.other_resources && s.other_resources.toLowerCase() !== 'no') lines.push(s.other_resources);
+    if (s.other_resources_details) lines.push(s.other_resources_details);
+    return lines.join('\n') || '—';
+  }
+
   function toggleDetail() {
-    var detailId = this.getAttribute('data-detail');
-    var detail = document.getElementById(detailId);
-    if (!detail) return;
+    var det = document.getElementById(this.getAttribute('data-det'));
+    if (!det) return;
     var open = this.getAttribute('aria-expanded') === 'true';
-    this.setAttribute('aria-expanded', open ? 'false' : 'true');
-    detail.setAttribute('aria-hidden', open ? 'true' : 'false');
-    this.classList.toggle('row-expanded', !open);
+    this.setAttribute('aria-expanded', String(!open));
+    det.setAttribute('aria-hidden', String(open));
+    this.classList.toggle('row-open', !open);
   }
 
-  /* --- Formatters --- */
-  function formatFees(fees) {
-    if (!fees || fees === '—' || fees === 'Not available') return '<span class="na-cell">Not available</span>';
-    return '<span class="fees-value">' + esc(fees) + '</span>';
+  /* ── Formatters ─────────────────────────────────────────── */
+  function fmtFees(v) {
+    if (!v || v === 'Not available' || v === 'TBA') return '<span class="muted">' + esc(v || '—') + '</span>';
+    return '<span class="fees-val">' + esc(v) + '</span>';
   }
 
-  function formatFunding(v) {
-    if (!v || v === '—') return '<span class="na-cell">—</span>';
-    // Extract a short version (up to first parenthesis or 40 chars)
-    var short = v.replace(/\(.*?\)/g, '').trim();
-    if (short.length > 45) short = short.substring(0, 45) + '…';
-    return '<span title="' + esc(v) + '">' + esc(short) + '</span>';
+  function fmtShort(v) {
+    if (!v) return '<span class="muted">—</span>';
+    var s = v.replace(/\(.*?\)/g, '').replace(/\+.*/,'').trim();
+    if (s.length > 42) s = s.substring(0, 42) + '…';
+    return '<span title="' + esc(v) + '">' + esc(s) + '</span>';
   }
 
   function ynBadge(v) {
-    if (!v || v === '—') return '<span class="badge badge-unknown">—</span>';
-    var lower = v.toLowerCase();
-    if (lower === 'yes') return '<span class="badge badge-yes">Yes</span>';
-    if (lower === 'no') return '<span class="badge badge-no">No</span>';
-    if (lower === "don't know" || lower === "don't know") return '<span class="badge badge-unknown">Unknown</span>';
-    return '<span class="badge badge-unknown">' + esc(v) + '</span>';
+    if (!v || v === 'Not reported') return '<span class="badge b-nr">—</span>';
+    var l = v.toLowerCase();
+    if (l === 'yes')        return '<span class="badge b-yes">Yes</span>';
+    if (l === 'no')         return '<span class="badge b-no">No</span>';
+    if (l.indexOf("don't") !== -1 || l === 'unknown') return '<span class="badge b-nr">?</span>';
+    return '<span class="badge b-nr">' + esc(v) + '</span>';
   }
 
   function travelBadge(v) {
-    if (!v || v === '—' || v === 'Not specified') return '<span class="badge badge-unknown">Not specified</span>';
-    if (v === 'None provided') return '<span class="badge badge-no">None provided</span>';
-    if (v.indexOf('Advance') !== -1) return '<span class="badge badge-advance">' + esc(v) + '</span>';
-    return '<span class="badge badge-travel">' + esc(v) + '</span>';
+    if (!v || v === 'Not reported') return '<span class="badge b-nr">Not reported</span>';
+    if (v === 'No reimbursement')   return '<span class="badge b-no">No reimbursement</span>';
+    if (v === 'Not applicable')     return '<span class="badge b-nr">N/A</span>';
+    return '<span class="badge b-travel">' + esc(v) + '</span>';
   }
 
-  function resourcesList(school) {
-    var items = [];
-    if (school.scrubs && school.scrubs.toLowerCase() === 'yes') {
-      items.push('Scrubs' + (school.scrubs_details && school.scrubs_details !== '—' ? ' (' + school.scrubs_details.substring(0,60) + ')' : ''));
-    }
-    if (school.stethoscope && school.stethoscope.toLowerCase() === 'yes') items.push('Stethoscope');
-    if (school.passmed && school.passmed.toLowerCase() === 'yes') items.push('Passmed');
-    if (school.ipads && school.ipads.toLowerCase() === 'yes') items.push('iPads');
-    if (school.other_resources && school.other_resources !== '—') items.push(school.other_resources);
-    return items.length ? items.map(function(i){ return '<span class="resource-tag">' + esc(i) + '</span>'; }).join(' ') : '<span class="na-cell">None reported</span>';
-  }
-
-  function esc(str) {
-    if (str === null || str === undefined) return '&mdash;';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+  function esc(s) {
+    if (s === null || s === undefined) return '—';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   function showError() {
-    var tbody = document.getElementById('table-body');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="loading-cell">Data unavailable. Please try again later.</td></tr>';
+    var tb = document.getElementById('table-body');
+    if (tb) tb.innerHTML = '<tr><td colspan="12" class="loading-cell">Data unavailable.</td></tr>';
   }
 
-  /* --- Filtering --- */
+  function updateCount(n) {
+    var el = document.getElementById('table-count');
+    if (el) el.textContent = n + ' of ' + allData.length + ' institutions';
+  }
+
+  /* ── Search & Filters ───────────────────────────────────── */
   function getFiltered() {
-    var q = ((document.getElementById('table-search') || {}).value || '').toLowerCase().trim();
-    var leaveVal = ((document.getElementById('filter-leave') || {}).value || '');
-    var scrubsVal = ((document.getElementById('filter-scrubs') || {}).value || '');
-    var travelVal = ((document.getElementById('filter-travel') || {}).value || '');
+    var q  = ((document.getElementById('table-search') || {}).value || '').toLowerCase().trim();
+    var fl = ((document.getElementById('f-leave')      || {}).value || '');
+    var fs = ((document.getElementById('f-scrubs')     || {}).value || '');
+    var ft = ((document.getElementById('f-travel')     || {}).value || '');
 
     return sortedData.filter(function (s) {
-      if (q && s.university.toLowerCase().indexOf(q) === -1) return false;
-      if (leaveVal && (s.flexible_leave || '').toLowerCase() !== leaveVal.toLowerCase()) return false;
-      if (scrubsVal && (s.scrubs || '').toLowerCase() !== scrubsVal.toLowerCase()) return false;
-      if (travelVal && (s.travel_support_type || '').indexOf(travelVal) === -1) return false;
+      if (q  && s.university.toLowerCase().indexOf(q) === -1) return false;
+      if (fl && (s.flexible_leave || '').toLowerCase() !== fl.toLowerCase()) return false;
+      if (fs && (s.scrubs         || '').toLowerCase() !== fs.toLowerCase()) return false;
+      if (ft && (s.travel_type    || '').indexOf(ft) === -1) return false;
       return true;
     });
   }
@@ -196,18 +176,18 @@
   function applyFilters() { renderTable(getFiltered()); }
 
   function setupSearch() {
-    var input = document.getElementById('table-search');
-    if (input) input.addEventListener('input', applyFilters);
+    var el = document.getElementById('table-search');
+    if (el) el.addEventListener('input', applyFilters);
   }
 
   function setupFilters() {
-    ['filter-leave', 'filter-scrubs', 'filter-travel'].forEach(function (id) {
+    ['f-leave','f-scrubs','f-travel'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('change', applyFilters);
     });
   }
 
-  /* --- Sorting --- */
+  /* ── Sort ───────────────────────────────────────────────── */
   function setupSort() {
     var ths = document.querySelectorAll('#comparison-table th.sortable');
     ths.forEach(function (th) {
@@ -219,25 +199,17 @@
           currentSort.col = col;
           currentSort.dir = 'asc';
         }
-        ths.forEach(function (t) { t.classList.remove('sort-asc', 'sort-desc'); });
+        ths.forEach(function (t) { t.classList.remove('sort-asc','sort-desc'); });
         this.classList.add(currentSort.dir === 'asc' ? 'sort-asc' : 'sort-desc');
 
         sortedData = allData.slice().sort(function (a, b) {
-          var va = getSortValue(a, col);
-          var vb = getSortValue(b, col);
-          if (currentSort.dir === 'asc') return va < vb ? -1 : va > vb ? 1 : 0;
-          return va > vb ? -1 : va < vb ? 1 : 0;
+          var va = String(a[col] || '').toLowerCase();
+          var vb = String(b[col] || '').toLowerCase();
+          return currentSort.dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
         });
-
         renderTable(getFiltered());
       });
     });
-  }
-
-  function getSortValue(obj, col) {
-    var v = obj[col];
-    if (v === null || v === undefined) return '';
-    return String(v).toLowerCase();
   }
 
 })();

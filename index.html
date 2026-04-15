@@ -139,30 +139,30 @@
       <!-- Summary Table -->
       <section class="panel table-panel" id="summary">
         <h2 class="panel-heading">Summary of data</h2>
-        <p>45 UK medical schools. Click any column header to sort. Click a row to expand full details.</p>
+        <p>45 UK medical schools. Sort by any column. Click a row to expand full details.</p>
 
         <div class="table-controls">
           <div class="search-wrapper">
-            <label for="table-search" class="sr-only">Filter institutions</label>
+            <label for="table-search" class="sr-only">Search institutions</label>
             <input type="text" id="table-search" placeholder="Search institutions&hellip;" class="search-input" autocomplete="off">
           </div>
           <div class="filter-group">
-            <select id="filter-leave" class="filter-select">
-              <option value="">All — Flexible leave</option>
+            <select id="f-leave" class="filter-select">
+              <option value="">Flexible leave: all</option>
               <option value="Yes">Flexible leave: Yes</option>
               <option value="No">Flexible leave: No</option>
             </select>
-            <select id="filter-scrubs" class="filter-select">
-              <option value="">All — Scrubs</option>
+            <select id="f-scrubs" class="filter-select">
+              <option value="">Scrubs: all</option>
               <option value="Yes">Scrubs provided: Yes</option>
               <option value="No">Scrubs provided: No</option>
             </select>
-            <select id="filter-travel" class="filter-select">
-              <option value="">All — Travel support</option>
+            <select id="f-travel" class="filter-select">
+              <option value="">Travel support: all</option>
               <option value="Claim-based">Claim-based</option>
               <option value="Advance payment">Advance payment</option>
               <option value="Transport provided">Transport provided</option>
-              <option value="None provided">None provided</option>
+              <option value="No reimbursement">No reimbursement</option>
             </select>
           </div>
           <div class="table-meta" id="table-count"></div>
@@ -172,23 +172,25 @@
           <table id="comparison-table" class="comparison-table">
             <thead>
               <tr>
-                <th data-col="university" class="sortable col-uni">University <span class="sort-icon">&#8597;</span></th>
-                <th data-col="international_fees" class="sortable col-fees">Int. Fees (per yr) <span class="sort-icon">&#8597;</span></th>
-                <th data-col="travel_support_type" class="sortable col-travel">Travel Support <span class="sort-icon">&#8597;</span></th>
-                <th data-col="flexible_leave" class="sortable col-yn">Flexible Leave <span class="sort-icon">&#8597;</span></th>
-                <th data-col="scrubs" class="sortable col-yn">Scrubs <span class="sort-icon">&#8597;</span></th>
-                <th data-col="stethoscope" class="sortable col-yn">Stethoscope <span class="sort-icon">&#8597;</span></th>
-                <th data-col="passmed" class="sortable col-yn">Passmed <span class="sort-icon">&#8597;</span></th>
-                <th data-col="hardship_funding" class="sortable col-fund">Hardship Funding <span class="sort-icon">&#8597;</span></th>
-                <th class="col-expand"></th>
+                <th data-col="university"          class="sortable th-uni">University <span class="sort-icon">&#8597;</span></th>
+                <th data-col="international_fees"  class="sortable th-fees">Int. Fees / yr <span class="sort-icon">&#8597;</span></th>
+                <th data-col="travel_type"         class="sortable th-travel">Travel Support <span class="sort-icon">&#8597;</span></th>
+                <th data-col="flexible_leave"      class="sortable th-yn">Flexible Leave <span class="sort-icon">&#8597;</span></th>
+                <th data-col="scrubs"              class="sortable th-yn">Scrubs <span class="sort-icon">&#8597;</span></th>
+                <th data-col="stethoscope"         class="sortable th-yn">Stethoscope <span class="sort-icon">&#8597;</span></th>
+                <th data-col="passmed"             class="sortable th-yn">Passmed <span class="sort-icon">&#8597;</span></th>
+                <th data-col="ipads"               class="sortable th-yn">iPads <span class="sort-icon">&#8597;</span></th>
+                <th data-col="hardship_funding"    class="sortable th-fund">Hardship Funding <span class="sort-icon">&#8597;</span></th>
+                <th data-col="elective_funding_year" class="sortable th-elective">Elective Yr <span class="sort-icon">&#8597;</span></th>
+                <th class="th-expand"></th>
               </tr>
             </thead>
             <tbody id="table-body">
-              <tr><td colspan="9" class="loading-cell">Loading data&hellip;</td></tr>
+              <tr><td colspan="11" class="loading-cell">Loading data&hellip;</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="table-note">Data compiled from responses submitted by student representatives. Some fields may be incomplete or subject to change. Verify with your institution.</p>
+        <p class="table-note">Data compiled from responses submitted by BMA student representatives. Some fields may be incomplete or subject to change. Always verify directly with institutions.</p>
       </section>
 
       <!-- Further Information -->

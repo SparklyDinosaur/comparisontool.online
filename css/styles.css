@@ -418,27 +418,32 @@ body {
   background: #fafbfc;
 }
 
-.university-cell {
-  font-weight: 600;
-  color: var(--text-primary) !important;
-  white-space: nowrap;
-}
+/* column widths */
+.th-uni      { min-width: 160px; }
+.th-fees     { min-width: 160px; white-space: nowrap; }
+.th-travel   { min-width: 160px; }
+.th-yn       { min-width: 80px; text-align: center; }
+.th-fund     { min-width: 180px; }
+.th-elective { min-width: 90px; white-space: nowrap; }
+.th-expand   { width: 32px; }
 
-.fees-cell { white-space: nowrap; }
+.col-uni  { font-weight: 600; color: var(--text-primary) !important; white-space: nowrap; }
+.col-fees { white-space: nowrap; }
+.col-yn   { text-align: center; }
+.col-fund { font-size: 0.8125rem; max-width: 200px; }
+.col-elective { font-size: 0.8125rem; white-space: nowrap; }
 
-.fees-value {
+.fees-val {
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.fund-cell {
+.muted {
+  color: var(--text-muted);
+  font-style: italic;
   font-size: 0.8125rem;
-  max-width: 180px;
 }
-
-.col-yn  { text-align: center; }
-.col-yn .badge { display: block; margin: 0 auto; text-align: center; }
 
 .expand-cell {
   width: 32px;
@@ -460,13 +465,13 @@ body {
 
 .data-row:hover .expand-icon { opacity: 1; }
 
-.data-row.row-expanded .expand-icon {
+.data-row.row-open .expand-icon {
   transform: rotate(180deg);
   opacity: 1;
   color: var(--accent);
 }
 
-.data-row.row-expanded td {
+.data-row.row-open td {
   background: #f5f8fd;
   border-bottom: none;
 }
@@ -562,11 +567,10 @@ body {
   white-space: nowrap;
 }
 
-.badge-yes     { background: var(--green-bg);  color: var(--green-text); }
-.badge-no      { background: var(--red-bg);    color: var(--red-text);   }
-.badge-unknown { background: #f3f4f6;          color: var(--text-muted); }
-.badge-travel  { background: #eff6ff;          color: #1d4ed8;           }
-.badge-advance { background: #f0fdf4;          color: #166534;           }
+.b-yes    { background: var(--green-bg); color: var(--green-text); }
+.b-no     { background: var(--red-bg);   color: var(--red-text);   }
+.b-nr     { background: #f3f4f6;         color: var(--text-muted); }
+.b-travel { background: #eff6ff;         color: #1d4ed8;           }
 
 .loading-cell {
   text-align: center !important;
