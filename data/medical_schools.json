@@ -1,0 +1,100 @@
+{
+  "schools": [
+    {
+      "university": "University of Birmingham",
+      "international_fees": "£30,000 – £43,000",
+      "travel_support": "Upfront payment",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Stethoscope", "Learning platforms"],
+      "financial_support": ["Hardship fund", "Elective funding"]
+    },
+    {
+      "university": "University of Bristol",
+      "international_fees": "£31,200 – £44,500",
+      "travel_support": "Claim-based reimbursement",
+      "leave_flexibility": "High",
+      "resources_provided": ["Scrubs", "Digital devices", "Learning platforms"],
+      "financial_support": ["Hardship fund"]
+    },
+    {
+      "university": "University of Cambridge",
+      "international_fees": "£37,227 – £55,014",
+      "travel_support": "Fixed allowance",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Stethoscope", "Learning platforms"],
+      "financial_support": ["Hardship fund", "Elective funding"]
+    },
+    {
+      "university": "University of Edinburgh",
+      "international_fees": "£32,050 – £44,800",
+      "travel_support": "Claim-based reimbursement",
+      "leave_flexibility": "High",
+      "resources_provided": ["Stethoscope", "Digital resources"],
+      "financial_support": ["Hardship fund", "Elective funding"]
+    },
+    {
+      "university": "Imperial College London",
+      "international_fees": "£36,000 – £50,000",
+      "travel_support": "Upfront payment",
+      "leave_flexibility": "Limited",
+      "resources_provided": ["Scrubs", "Stethoscope", "Digital devices"],
+      "financial_support": ["Hardship fund"]
+    },
+    {
+      "university": "King's College London",
+      "international_fees": "£33,100 – £47,500",
+      "travel_support": "Fixed allowance",
+      "leave_flexibility": "High",
+      "resources_provided": ["Scrubs", "Learning platforms"],
+      "financial_support": ["Hardship fund", "Research grants", "Elective funding"]
+    },
+    {
+      "university": "University of Leeds",
+      "international_fees": "£30,100 – £42,300",
+      "travel_support": "Claim-based reimbursement",
+      "leave_flexibility": "Limited",
+      "resources_provided": ["Learning platforms"],
+      "financial_support": ["Hardship fund"]
+    },
+    {
+      "university": "University of Manchester",
+      "international_fees": "£30,500 – £42,000",
+      "travel_support": "Fixed allowance",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Scrubs", "Learning platforms"],
+      "financial_support": ["Hardship fund"]
+    },
+    {
+      "university": "Newcastle University",
+      "international_fees": "£30,000 – £41,500",
+      "travel_support": "Fixed allowance",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Stethoscope"],
+      "financial_support": ["Hardship fund", "Research grants"]
+    },
+    {
+      "university": "University of Oxford",
+      "international_fees": "£35,820 – £52,130",
+      "travel_support": "Claim-based reimbursement",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Stethoscope", "Digital resources"],
+      "financial_support": ["Hardship fund", "Research grants"]
+    },
+    {
+      "university": "University of Sheffield",
+      "international_fees": "£31,500 – £43,000",
+      "travel_support": "Fixed allowance",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Scrubs", "Stethoscope"],
+      "financial_support": ["Hardship fund", "Elective funding"]
+    },
+    {
+      "university": "University College London",
+      "international_fees": "£34,900 – £49,700",
+      "travel_support": "Claim-based reimbursement",
+      "leave_flexibility": "Moderate",
+      "resources_provided": ["Learning platforms", "Stethoscope"],
+      "financial_support": ["Hardship fund", "Elective funding"]
+    }
+  ]
+}
